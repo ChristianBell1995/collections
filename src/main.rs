@@ -1,4 +1,9 @@
 fn main() {
+    vectors();
+    strings();
+}
+
+fn vectors() {
     let v = vec![45, 43, 88, 102, 55, 1, 2];
     let mean = mean(&v);
     println!("The mean is: {}", mean);
@@ -51,4 +56,45 @@ fn mode(vector: &Vec<usize>) -> usize {
     println!("{:?}", count_vec);
 
     *count_vec[0].0
+}
+
+
+// Convert strings to pig latin.
+// The first consonant of each word is moved to the end of the word and “ay” is added,
+// so “first” becomes “irst-fay.” Words that start with a vowel have “hay” added to the end
+// instead (“apple” becomes “apple-hay”). Keep in mind the details about UTF-8 encoding!
+
+fn strings() {
+    let sentance = "Here is a sentance that we want to convert to pig latin";
+    let pigified = pigify_sentance(&sentance);
+
+    println!("{:?}", pigified);
+}
+
+fn pigify_sentance(text: &str) -> String {
+    text.split_whitespace()
+        .map(pigify_one)
+        .fold(String::new(), folder)
+}
+
+fn pigify_one(word: &str) -> String {
+    let mut chars = word.chars();
+
+    let first_char = match chars.next() {
+        Some(c) => c,
+        None => return String::new(),
+    };
+
+    match first_char {
+        'a' | 'e' | 'i' | 'o' | 'u' => format!("{}-hay", word),
+        _ => format!("{}-{}ay", chars.as_str(), first_char),
+    }
+}
+
+fn folder(mut current: String, next: String) -> String {
+    if !current.is_empty() {
+        current.push(' ');
+    }
+    current.push_str(&next);
+    current
 }
